@@ -8,43 +8,7 @@ options(shiny.maxRequestSize = 25*1024^2)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
     
-    # Expression that generates a histogram. The expression is
-    # wrapped in a call to renderPlot to indicate that:
-    #
-    #  1) It is "reactive" and therefore should be automatically
-    #     re-executed when inputs change
-    #  2) Its output type is a plot
-    
-    output$distPlot <- renderPlot({
-        x    <- faithful[, 2]  # Old Faithful Geyser data
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-        
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    })
-    
-    output$contents <- renderTable({
-        # input$file1 will be NULL initially. After the user selects
-        # and uploads a file, it will be a data frame with 'name',
-        # 'size', 'type', and 'datapath' columns. The 'datapath'
-        # column will contain the local filenames where the data can
-        # be found.
-        
-        inFile <- input$file1
-        
-        if (is.null(inFile))
-            return(NULL)
-        
-        read.csv(inFile$datapath, header=FALSE)
-    })
-    
-    output$impact <- renderPlot({
-        # input$file1 will be NULL initially. After the user selects
-        # and uploads a file, it will be a data frame with 'name',
-        # 'size', 'type', and 'datapath' columns. The 'datapath'
-        # column will contain the local filenames where the data can
-        # be found.
-        
+    getImpact <- reactive({
         inFile <- input$file1
         
         if (is.null(inFile))
@@ -62,8 +26,18 @@ shinyServer(function(input, output) {
         
         z = zoo(cbind(y=d$Treat, x=d$Control), d$Date)
         set.seed(420)
-        impact = CausalImpact(z, pre.period, post.period)
+        CausalImpact(z, pre.period, post.period)
+        
+    })
+    
+    output$impactPlot <- renderPlot({
+        impact = getImpact()
         plot(impact)        
+    })
+    
+    output$impactReport  <- renderText({
+        impact = getImpact()
+        impact$report
     })
     
     output$prevalue  <- renderText({
