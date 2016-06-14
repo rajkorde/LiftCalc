@@ -43,11 +43,27 @@ shinyServer(function(input, output) {
         plot(impact)        
     })
     
-    output$impactReport  <- renderText({
+    output$impactReport  <- renderPrint({
         if (is.null(input$file1))
             return(NULL)
         impact = getImpact()
-        impact$report
+        #impact$report
+        summary(impact, "report")
+    })
+    
+    output$impactLiftCI <- renderText({
+        if (is.null(input$file1))
+            return(NULL)
+        impact = getImpact()
+        paste0(round(impact$summary$RelEffect.lower[2], 2), "% to ",
+               round(impact$summary$RelEffect.upper[2], 2), "%")       
+    })
+    
+    output$impactLift <- renderText({
+        if (is.null(input$file1))
+            return(NULL)
+        impact = getImpact()
+        paste0(round(impact$summary$RelEffect[2], 2), "%")       
     })
     
     ######################
@@ -67,48 +83,67 @@ shinyServer(function(input, output) {
         dt = d[d$Group=="Treatment"|d$Group=="treatment",]
         cmean = mean(dc$Value)
         tmean = mean(dt$Value)
-        lift = (tmean - cmean)/cmean
+        lift = ((tmean - cmean)*100)/cmean
         l = list(t=t, d=d, dc=dc, dt=dt, cmean=cmean, tmean=tmean, lift=lift)
     })
     
     output$meansPlot <- renderPlot({
+        
+        if (is.null(input$file2))
+            return(NULL)
+        
         l = getMeansTest()
         boxplot(Value~Group, data=l$d)        
     })
     
-#     output$meansDebug  <- renderText({
-#         l = getPropTest()
-#         paste(l$cprop, l$ctotal, l$tprop, l$ttotal)
-#     })
-    
     output$meansLift  <- renderText({
+        if (is.null(input$file2))
+            return(NULL)
         l = getMeansTest()
-        l$lift
+        paste0(round(l$lift, 2), "%")
     })
     
-#     output$propPower  <- renderText({
-#         l = getPropTest()
-#         l$p$power
-#     })
-    
-    output$meansControl  <- renderText({
+    output$meansValue  <- renderText({
+        if (is.null(input$file2))
+            return(NULL)
         l = getMeansTest()
-        l$cmean
-    })
-
-    output$meansTreatment  <- renderText({
-        l = getMeansTest()
-        l$tmean
+        paste(round(l$cmean, 2), "(control) and", 
+              round(l$tmean, 2), "(treatment)")
     })
     
     output$meansSiglevel  <- renderText({
+        if (is.null(input$file2))
+            return(NULL)
         l = getMeansTest()
         msg = ifelse(l$t$p.value<0.05, 
                      "(Statistically significant difference found!)",
                      "(Difference is not statistically significant)")
-        paste(l$t$p.value, msg)
+        paste(round(l$t$p.value, 5), msg)
+    })
+
+#     output$meansPower  <- renderText({
+#         if (is.null(input$file2))
+#             return(NULL)
+#         l = getMeansTest()
+#     })
+    
+    output$meansSS  <- renderText({
+        if (is.null(input$file2))
+            return(NULL)
+        l = getMeansTest()
+        paste(nrow(l$dc), "(control) and", nrow(l$dt), "(treatment)")
     })
     
+    output$meansIdealSS  <- renderText({
+        if (is.null(input$file2))
+            return(NULL)
+        l = getMeansTest()
+        sdev = sd(l$dc$Value)
+        p=power.t.test(delta=l$tmean-l$cmean, sd=sdev, sig.level=0.05, power=0.8)
+        paste(round(p$n, 2), "would have been a good sample size for this difference in means 
+              with 0.05 significance level, 0.8 power and 50-50 split")
+    })
+
     ######################
     ## Prop test
     ######################
@@ -123,48 +158,67 @@ shinyServer(function(input, output) {
             r = prop.test(prop, total)
             h=ES.h(tp, cp)
             p = pwr.2p2n.test(h=h, 
-                          n1=input$ttotal, n2=input$ctotal, sig.level=sig.level)
+                          n1=as.numeric(input$ttotal), 
+                          n2=as.numeric(input$ctotal), 
+                          sig.level=sig.level)
             lift = ((tp-cp)*100)/cp
-            l = list(p=p, r=r, lift=lift, cp=cp, tp=tp, 
-                     cprop = input$cprop, ctotal = input$ctotal,
-                     tprop = input$tprop, ttotal = input$ttotal)
+            l = list(p=p, r=r, lift=lift, cp=cp, tp=tp)
             l
         })
-    
-    output$PropDebug  <- renderText({
+
+    output$propSS  <- renderText({
+        if (input$ctotal==0||input$ttotal==0)
+            return(NULL)
         l = getPropTest()
-        paste(l$cprop, l$ctotal, l$tprop, l$ttotal)
+        paste(input$ctotal, "(control) and", input$ttotal, "(treatment)")
     })
+
+    output$propIdealSS  <- renderText({
+        if (input$ctotal==0||input$ttotal==0)
+            return(NULL)
+        l = getPropTest()
+        p = power.prop.test(p1=l$cp, p2=l$tp, sig.level=0.05, power=0.8)
+        paste(round(p$n, 2), "would have been a good sample size for these proportions 
+              with 0.05 significance level, 0.8 power and 50-50 split")
+    })
+
     
     output$propLift  <- renderText({
+        if (input$ctotal==0||input$ttotal==0)
+            return(NULL)
         l = getPropTest()
-        l$lift
+        paste0(round(l$lift, 2), "%")
     })
     
     output$propPower  <- renderText({
+        if (input$ctotal==0||input$ttotal==0)
+            return(NULL)
         l = getPropTest()
-        l$p$power
+        paste(round(l$p$power, 2), "at 0.05 significance level at these proportions and sample sizes")
     })
     
-    output$propControl  <- renderText({
+    output$propValue  <- renderText({
+        if (input$ctotal==0||input$ttotal==0)
+            return(NULL)
         l = getPropTest()
-        l$cp
-    })
-    output$propTreatment  <- renderText({
-        l = getPropTest()
-        l$tp
+        paste(round(l$cp, 5), "(control) and", 
+              round(l$tp, 5), "(treatment)")
     })
     
     output$propSiglevel  <- renderText({
+        if (input$ctotal==0||input$ttotal==0)
+            return(NULL)
         l = getPropTest()
         msg = ifelse(l$r$p.value<0.05, 
                      "(Statistically significant difference found!)",
                      "(Difference is not statistically significant)")
-        paste(l$r$p.value, msg)
+        paste(round(l$r$p.value, 5), msg)
     })
     
     output$propPlot <- renderPlot({
+        if (input$ctotal==0||input$ttotal==0)
+            return(NULL)
         l = getPropTest()
-        barplot(c(treatment=l$tp, control=l$cp))
+        barplot(c(control=l$cp, treatment=l$tp))
     })
 })

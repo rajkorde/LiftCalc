@@ -22,6 +22,10 @@ shinyUI(navbarPage("Lift Calculator",
                                     )
                                 ),
                                 mainPanel(
+                                    strong("Lift: "),
+                                    textOutput("impactLift"),
+                                    strong("Confidence Interval: "),
+                                    textOutput("impactLiftCI"),
                                     plotOutput("impactPlot"),
                                     verbatimTextOutput("impactReport")
                                 )
@@ -43,10 +47,12 @@ shinyUI(navbarPage("Lift Calculator",
                                     textOutput("meansLift"),
                                     strong("Significance level: "),
                                     textOutput("meansSiglevel"),
-                                    strong("Control Means: "),
-                                    textOutput("meansControl"),
-                                    strong("Treatment Means: "),
-                                    textOutput("meansTreatment"),
+                                    strong("Means: "),
+                                    textOutput("meansValue"),
+                                    strong("Sample size: "),
+                                    textOutput("meansSS"),
+                                    strong("Ideal Sample size: "),
+                                    textOutput("meansIdealSS"),
                                     plotOutput("meansPlot")
                                 )
                             )
@@ -57,72 +63,34 @@ shinyUI(navbarPage("Lift Calculator",
                                     h3("Control"),
                                     numericInput("cprop", 
                                         label = "Proportion", 
-                                        value = 50),
+                                        value = 0),
                                     numericInput("ctotal", 
                                                  label = "Sample Size", 
-                                                 value = 100),
+                                                 value = 0),
                                     h3("Treatment"),
                                     numericInput("tprop", 
                                                  label = "Proportion", 
-                                                 value = 50),
+                                                 value = 0),
                                     numericInput("ttotal", 
                                                  label = "Sample Size", 
-                                                 value = 100),
+                                                 value = 0),
                                     submitButton("Submit")
                                 ),
                                 mainPanel(
-                                    verbatimTextOutput("propDebug"),
                                     strong("Lift: "),
                                     textOutput("propLift"),
                                     strong("Significance level: "),
                                     textOutput("propSiglevel"),
                                     strong("Power: "),
                                     textOutput("propPower"),
-                                    strong("Control Proportion: "),
-                                    textOutput("propControl"),
-                                    strong("Treatment Proportion: "),
-                                    textOutput("propTreatment"),
+                                    strong("Proportions: "),
+                                    textOutput("propValue"),
+                                    strong("Sample size: "),
+                                    textOutput("propSS"),
+                                    strong("Ideal Sample size: "),
+                                    textOutput("propIdealSS"),
                                     plotOutput("propPlot")
                                 )
                             )
                    )
 ))
-
-
-#     fluidPage(
-#     
-#     # Application title
-#     titlePanel("Lift Calculator"),
-#     
-#     # Sidebar with a slider input for the number of bins
-#     sidebarLayout(
-#         sidebarPanel(
-#             dateRangeInput("predates", 
-#                            label = "Pre-Experiment Period",
-#                            start = Sys.Date()-28,
-#                            end = Sys.Date()-15),
-#             dateRangeInput("postdates", 
-#                            label = "Experiment Period",
-#                            start = Sys.Date()-14,
-#                            end = Sys.Date()),
-#             fileInput('file1', 'Choose file to upload',
-#                       accept = c(
-#                           'text/csv',
-#                           'text/comma-separated-values',
-#                           '.csv'
-#                       )
-#             )
-#         ),
-#         
-#         # Show a plot of the generated distribution
-#         mainPanel(
-#             verbatimTextOutput("prevalue"),
-#             verbatimTextOutput("postvalue"),
-#             plotOutput("impactPlot"),
-#             verbatimTextOutput("impactReport")
-#         )
-#     )
-#     )
-
-    
-#)

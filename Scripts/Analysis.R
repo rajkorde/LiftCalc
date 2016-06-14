@@ -15,12 +15,13 @@ set.seed(420)
 impact=CausalImpact(z, pre.period, post.period)
 plot(impact)
 summary(impact, "report")
+summary(impact)
 
 #prop test
-cprop=59179
-ctotal=4412083
-tprop=852
-ttotal=137901
+cprop=391
+ctotal=47606 
+tprop=663
+ttotal=68409
 sig.level=0.05
 
 prop = c(cprop, tprop)
@@ -32,12 +33,18 @@ h=ES.h(tp, cp)
 p = pwr.2p2n.test(h=h, 
                   n1=ttotal, ctotal, sig.level=sig.level)
 lift = ((tp-cp)*100)/cp
+p = power.prop.test(p1=cp, p2=tp, sig.level=0.05, power=0.8)
 
 l = list(p=p, r=r, lift=lift)
 
 barplot(c(treatment=tprop/ttotal, control=cprop/ctotal))
 
 #means test
-d = read.csv(file="Data/3b60mData.csv", header=FALSE, col.names=
+d = read.csv(file="Data/ETtreatA.csv", header=FALSE, col.names=
                  c("ID", "Group", "Value"))
 t = t.test(Value~Group, data=d)
+
+dc = d[d$Group=="Control"|d$Group=="control",]
+dt = d[d$Group=="Treatment"|d$Group=="treatment",]
+p=power.t.test(delta=t$estimate[1]-t$estimate[2], sd=sd(dc$Value), sig.level=0.05, power=0.8)
+
