@@ -40,7 +40,7 @@ l = list(p=p, r=r, lift=lift)
 barplot(c(treatment=tprop/ttotal, control=cprop/ctotal))
 
 #means test
-d = read.csv(file="Data/ETtreatA.csv", header=FALSE, col.names=
+d = read.csv(file="Data/ETtreatB.csv", header=FALSE, col.names=
                  c("ID", "Group", "Value"))
 t = t.test(Value~Group, data=d)
 

@@ -111,14 +111,32 @@ shinyServer(function(input, output) {
               round(l$tmean, 2), "(treatment)")
     })
     
+    output$meansMedianValue  <- renderText({
+        if (is.null(input$file2))
+            return(NULL)
+        l = getMeansTest()
+        paste(median(l$dc$Value), "(control) and", 
+              median(l$dt$Value), "(treatment)")
+    })
+    
     output$meansSiglevel  <- renderText({
         if (is.null(input$file2))
             return(NULL)
         l = getMeansTest()
         msg = ifelse(l$t$p.value<0.05, 
-                     "(Statistically significant difference found!)",
-                     "(Difference is not statistically significant)")
+                     "(t-test: Statistically significant difference found!)",
+                     "(t-test: Difference is not statistically significant)")
         paste(round(l$t$p.value, 5), msg)
+    })
+    
+    output$meansSiglevelWRST  <- renderText({
+        if (is.null(input$file2))
+            return(NULL)
+        w = wilcox.test(Value~Group, data=d)
+        msg = ifelse(w$p.value<0.05, 
+                     "(Wilcoxon Rank Sum test: Statistically significant difference found!)",
+                     "(Wilcoxon Rank Sum test: Difference is not statistically significant)")
+        paste(round(w$p.value, 5), msg)
     })
 
 #     output$meansPower  <- renderText({
