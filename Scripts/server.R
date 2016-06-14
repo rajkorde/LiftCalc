@@ -79,12 +79,13 @@ shinyServer(function(input, output) {
         d = read.csv(inFile$datapath, header=FALSE, col.names=
                          c("ID", "Group", "Value"))
         t = t.test(Value~Group, data=d)
+        w = wilcox.test(Value~Group, data=d)
         dc = d[d$Group=="Control"|d$Group=="control",]
         dt = d[d$Group=="Treatment"|d$Group=="treatment",]
         cmean = mean(dc$Value)
         tmean = mean(dt$Value)
         lift = ((tmean - cmean)*100)/cmean
-        l = list(t=t, d=d, dc=dc, dt=dt, cmean=cmean, tmean=tmean, lift=lift)
+        l = list(t=t, w=w, d=d, dc=dc, dt=dt, cmean=cmean, tmean=tmean, lift=lift)
     })
     
     output$meansPlot <- renderPlot({
@@ -132,11 +133,12 @@ shinyServer(function(input, output) {
     output$meansSiglevelWRST  <- renderText({
         if (is.null(input$file2))
             return(NULL)
-        w = wilcox.test(Value~Group, data=d)
-        msg = ifelse(w$p.value<0.05, 
+        l = getMeansTest()
+        
+        msg = ifelse(l$w$p.value<0.05, 
                      "(Wilcoxon Rank Sum test: Statistically significant difference found!)",
                      "(Wilcoxon Rank Sum test: Difference is not statistically significant)")
-        paste(round(w$p.value, 5), msg)
+        paste(round(l$w$p.value, 5), msg)
     })
 
 #     output$meansPower  <- renderText({
