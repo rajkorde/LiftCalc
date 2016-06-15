@@ -95,5 +95,6 @@ shinyUI(navbarPage("Lift Calculator",
                                     plotOutput("propPlot")
                                 )
                             )
-                   )
+                   ),
+                   tabPanel("Help", includeHTML("help.html"))
 ))
