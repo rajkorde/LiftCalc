@@ -25,7 +25,7 @@ Test of means conducts the difference of means test under the null hypothesis th
 
 **Wilcoxon rank sum test:** non-parametric test that compares the ranks of two groups of values. Not susceptible to outliers.
 
-*Power:** probability of the test rejecting a false null hypothesis (As in the likelihood that the test will detect an effect where there is indeed an effect to be detected). Ideally, the power of the test should be greater than 0.8.
+**Power:** probability of the test rejecting a false null hypothesis (As in the likelihood that the test will detect an effect where there is indeed an effect to be detected). Ideally, the power of the test should be greater than 0.8.
 
 **Ideal Sample Size:** What would have been the ideal sample size for this test of means, that would detect the current difference in means, given the current standard deviation of control group, 0.8 power, 0.05 significance level and a 50-50 split between control and treatment group.
 
