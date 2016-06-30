@@ -6,8 +6,8 @@ output: html_document
 
 Impact Analysis uses the [CasualImpact](https://google.github.io/CausalImpact/CausalImpact.html) package to estimate the effect of an intervention on the outcome variable. Technical details about the package can be found [here](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/41854.pdf).
 
-The pre-experiment period refers to the period before the intervention. The Experiment period refers to  the period during which the intervention is occurring. The csv file contains data for the outcome variable for the both pre-experiment and experiment periods. The file should not have any header and should be the following format:
-<Date>, <Control Data>, <Experiment Data>
+The pre-experiment period refers to the period before the intervention. The Experiment period refers to  the period during which the intervention is occurring. The csv file contains data for the outcome variable for the both pre-experiment and experiment periods. The file should not have any header and should be the following format:<br>
+Date, Control Data, Experiment Data<br>
 
 ###Example:
  A sample experiment csv file is uploaded [here](https://1drv.ms/u/s!AE8yViESxcucirIg). The pre.experiment duration for this file is 5/10/2016 to 5/23/2016 and Experiment duration for this file is 5/24/2016 to 6/4/2016. The sample experiment file should show a lift of 0% with the confidence interval of -14% to +14%.
@@ -29,8 +29,8 @@ Test of means conducts the difference of means test under the null hypothesis th
 
 **Ideal Sample Size:** What would have been the ideal sample size for this test of means, that would detect the current difference in means, given the current standard deviation of control group, 0.8 power, 0.05 significance level and a 50-50 split between control and treatment group.
 
-The csv file contains data for control and treatment groups. It should not have any header and should be in the following format:
-<ID>, <Group>, <Value>
+The csv file contains data for control and treatment groups. It should not have any header and should be in the following format: <br>
+ID, Group, Value <br>
 Here, ID refers to ID of the experimental unit, Group refers to "Control" or "Treatment" and Value refers to value of the response variable.
 
 ###Example:
@@ -51,9 +51,6 @@ Test of proportions conducts the difference of proportions test under the null h
 
 **Ideal Sample Size:** What would have been the ideal sample size for this test of proportion, that would detect the current difference in proportions, given the current control group sample size, 0.8 power, 0.05 significance level and a 50-50 split between control and treatment group.
 
-The csv file contains data for control and treatment groups. It should not have any header and should be in the following format:
-<ID>, <Group>, <Value>
-Here, ID refers to ID of the experimental unit, Group refers to "Control" or "Treatment" and Value refers to value of the response variable.
 
 ###Example:
 The following table shows the result of an experiment:
