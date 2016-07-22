@@ -96,5 +96,38 @@ shinyUI(navbarPage("Lift Calculator",
                                 )
                             )
                    ),
+                   tabPanel("Sample Size Estimate",
+                            sidebarLayout(
+                                sidebarPanel(
+                                    dateRangeInput("predates1", 
+                                                   label = "Pre-Experiment Period",
+                                                   start = as.Date("2016-05-10", format="%Y-%m-%d"),
+                                                   end = as.Date("2016-05-23", format="%Y-%m-%d")),
+                                    dateRangeInput("postdates1", 
+                                                   label = "Experiment Period",
+                                                   start = as.Date("2016-05-24", format="%Y-%m-%d"),
+                                                   end = as.Date("2016-06-04", format="%Y-%m-%d")),
+                                    sliderInput("slider", "Integer:", 
+                                                min=0, max=1000, value=500),
+                                    textOutput("sliderValue")
+                                    ),
+                                sidebarPanel(
+                                    dateRangeInput("predates2", 
+                                                   label = "Pre-Experiment Period",
+                                                   start = as.Date("2016-05-10", format="%Y-%m-%d"),
+                                                   end = as.Date("2016-05-23", format="%Y-%m-%d")),
+                                    dateRangeInput("postdates2", 
+                                                   label = "Experiment Period",
+                                                   start = as.Date("2016-05-24", format="%Y-%m-%d"),
+                                                   end = as.Date("2016-06-04", format="%Y-%m-%d"))
+                                    ),
+                                mainPanel(
+                                    strong("Sample Size: "),
+                                    textOutput("sliderValue")
+                                )
+
+
+                                )
+                   ),
                    tabPanel("Help", includeHTML("help.html"))
 ))

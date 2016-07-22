@@ -241,4 +241,13 @@ shinyServer(function(input, output) {
         l = getPropTest()
         barplot(c(control=l$cp, treatment=l$tp))
     })
+    
+    #########################
+    ## Sample Size Estimate
+    #########################
+    
+    output$sliderValue  <- renderText({
+        input$slider
+    })
+    
 })
